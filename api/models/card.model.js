@@ -7,12 +7,14 @@ const cardSchema = new mongoose.Schema({
   },
   back: {
     type: String,
-    required: true,
+    reqired: true,
   },
   category: {
     type: String,
     default: 'General',
   },
+  
+  
 });
 
 const Card = mongoose.model('Card', cardSchema);

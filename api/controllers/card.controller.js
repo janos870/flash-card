@@ -1,23 +1,40 @@
 import Card from "../models/card.model.js";
+import { errorHandler } from "../utils/error.js";
 
 // Get all cards
-export const getCards = async (req, res) => {
+export const getCards = async (req, res, next) => {
   try {
-    const cards = await Card.find();
+    const cards = await Card.findOne();
     res.json(cards);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    next(error);
   }
 };
 
 // Create new card
-export const createCard = async (req, res) => {
+export const createCard = async (req, res, next) => {
   const { front, back, category } = req.body;
   const newCard = new Card({ front, back, category });
   try {
-    newCard.save();
-    res.json(newCard)
+    await newCard.validate();
+    const savedCard = await newCard.save();
+    if (!savedCard) return next(errorHandler(404, "Card not found"));
+    res.status(201).json(savedCard);
   } catch (error) {
-    res.status(401).json({ message: error.message });
+    next(error);
   }
 };
+
+// Delete card by ID
+export const deleteCard = async (req, res, next) => {
+  const cardId = req.params.id;
+  try {
+    const card = await Card.findByIdAndDelete(cardId);
+    if (!card) return next(errorHandler(404, "Card not found!"));  
+    res.json({ message: "Card deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
