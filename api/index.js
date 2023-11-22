@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import userRoute from "./routes/user.route.js";
 import authRoute from "./routes/auth.route.js";
+import cardRoute from "./routes/card.route.js";
 import cookieParser from "cookie-parser";
 import path from "path";
 dotenv.config();
@@ -11,8 +12,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
+app.use("/api/card", cardRoute);
 
 const __dirname = path.resolve();
 
